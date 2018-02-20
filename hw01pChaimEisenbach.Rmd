@@ -1,6 +1,7 @@
 ---
 title: "HW01p"
 author: "Chaim Eisenbach"
+collaborator: "Rachel Hia, Adina Bechhofer, Launy Schweiger, Joseph Petrolche"
 date: "February 23, 2018"
 output: pdf_document
 ---
@@ -70,15 +71,9 @@ expect_equal(my_reverse(v), rev(v))
 ```{r}
 n = 50
 #TO-DO
-#vec = c(0,0,1,2)
-#values = sample(vec, size = n*n, replace = TRUE, prob = NULL)
+
 values = c(rep(0,.5*n*n),rep(1,.25*n*n),rep(2,.25*n*n))
-
 R = matrix(sample(values), ncol = n, nrow = n)
-#R = matrix(round(runif(n*n,0,2),0), nrow = n, ncol= n)
-table(R)
-
-
 ```
 
 Test using the following and write two more tests as specified below:
@@ -86,7 +81,9 @@ Test using the following and write two more tests as specified below:
 ```{r}
 expect_equal(dim(R), c(n, n))
 #TO-DO test that the only unique values are 0, 1, 2
+
 expect_equal(n*n,sum(c(R)==0) + sum(c(R)==1)+ sum(c(R)==2))
+
 #TO-DO test that there are exactly 625 2's
 expect_equal(625,sum(2 == c(R)))
 
@@ -96,8 +93,6 @@ expect_equal(625,sum(2 == c(R)))
 
 ```{r}
 #TO-DO
-#R= replace(R,rbinom(R,size = n*n,0.3), values = NA)
-#sample(R)
 for(i in 1:n){
  for (j in 1:n){
     if (rbinom(1,1,0.3)==1){
@@ -119,9 +114,6 @@ expect_gt(num_missing_in_R, qbinom(0.005, n^2, 0.3))
 
 ```{r}
 #TO-DO
-#populate vector with sums of rows/
-#assign vector to rows using r.names
-#order the matrix by row name
 row_val = c()
 for(i in 1:n){
   row_val = c(row_val, sum(R[i, ], na.rm = TRUE))
@@ -129,10 +121,6 @@ for(i in 1:n){
  
 rownames(R) = row_val
 R = R[order(rownames(R), decreasing = TRUE), ]
-
-
-  
-
 ```
 
 Test using the following code.
@@ -189,9 +177,14 @@ expect_equal(inverse_quantile_obj(-7000), pnorm(-7000, mean = -10, sd = sqrt(10)
 ```{r}
 #TO-DO
 #A-H
-c("A", "B", "C","D", "E", "F", "G", "H")
-
-my_list =  
+#c("A", "B", "C","D", "E", "F", "G", "H")
+n = 8
+my_list = list
+for (i in 1:n){
+  for(j in 1:i){
+    my_list[rep(seq())]
+  }
+}
 ```
 
 Test with the following uncomprehensive tests:
