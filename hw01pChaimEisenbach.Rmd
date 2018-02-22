@@ -1,7 +1,7 @@
 ---
 title: "HW01p"
 author: "Chaim Eisenbach"
-collaborator: "Rachel Hia, Adina Bechhofer, Launy Schweiger, Joseph Petrolche"
+collaborators: "Rachel Hia, Adina Bechhofer, Launy Schweiger"
 date: "February 23, 2018"
 output: pdf_document
 ---
@@ -177,21 +177,23 @@ expect_equal(inverse_quantile_obj(-7000), pnorm(-7000, mean = -10, sd = sqrt(10)
 ```{r}
 #TO-DO
 #A-H
-#c("A", "B", "C","D", "E", "F", "G", "H")
+keys = c("A", "B", "C","D", "E", "F", "G", "H")
+#myListA = array(3, dim = c(3,3,3))
 n = 8
-my_list = list
+my_list = list()
+
 for (i in 1:n){
-  for(j in 1:i){
-    my_list[rep(seq())]
+  key = keys[i]
+  my_list[[key]] = array(seq(1,i), dim = c(rep(i,i)))
   }
-}
+
 ```
 
 Test with the following uncomprehensive tests:
 
 
 ```{r}
-expect_equal(my_list$A, 1)
+expect_equal(my_list$A[1], 1)
 expect_equal(my_list[[2]][, 1], 1 : 2)
 expect_equal(dim(my_list[["H"]]), rep(8, 8))
 ```
@@ -204,12 +206,15 @@ lapply(my_list, object.size)
 
 Use `?lapply` and `?object.size` to read about what these functions do. Then explain the output you see above. For the later arrays, does it make sense given the dimensions of the arrays?
 
+
 Answer here in English.
+The output is each key connected to its respective list. Object.size is providing an estimate of the memory allocated to these lists. So as we have a larger and larger n the memory that object.size provides us makes sense, because the dimensions are increasing in such vast quantities.
 
 Now cleanup the namespace by deleting all stored objects and functions:
 
 ```{r}
 #TO-DO
+rm(list=ls())
 
 ```
 
@@ -223,28 +228,39 @@ data(iris)
 head(iris)
 summary(iris)
 
-#There are three different species of Irises. We are also provided with information from 'Sepal.length', 'Sepal.Width', 'Petal.Length', 'Petal.Width'; which provide us with information about the sepal and petal length and width. Providing us statistically usefull information such at min, the quariles, max.
-```
 
+```
+There are three different species of Irises. We are also provided with information from 'Sepal.length', 'Sepal.Width', 'Petal.Length', 'Petal.Width'; which provide us with information about the sepal and petal length and width. Providing us statistically usefull information such at min, the quantiles, max.
 
 
 The outcome metric is `Species`. This is what we will be trying to predict. However, we have only done binary classification in class (i.e. two classes). Thus the first order of business is to drop one class. Let's drop the level "virginica" from the data frame.
 
 ```{r}
 #TO-DO
-
+iris = iris[iris$Species != "virginica", ]
 ```
 
 Now create a vector `y` that is length the number of remaining rows in the data frame whose entries are 0 if "setosa" and 1 if "versicolor".
 
 ```{r}
 #TO-DO
+y = nrow(iris)
+
+for (i in 1:nrow(iris)){
+    if (iris$Species[i] == "setosa"){
+      y[i] = 0
+    } else{
+      y [i]= 1
+    }
+  
+}
 ```
 
 9. Fit a threshold model to `y` using the feature `Sepal.Length`. Try to write your own code to do this. What is the estimated value of the threshold parameter? What is the total number of errors this model makes?
 
 ```{r}
 #TO-DO
+
 ```
 
 Does this make sense given the following summaries:
@@ -259,6 +275,9 @@ Write your answer here in English.
 10. Fit a perceptron model explaining `y` using all three features. Try to write your own code to do this. Provide the estimated parameters (i.e. the four entries of the weight vector)? What is the total number of errors this model makes?
 
 ```{r}
+perceptron = function(x,y,e,n){
+  
+}
 #TO-DO
 ```
 
