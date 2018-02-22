@@ -1,7 +1,7 @@
 ---
 title: "HW01p"
 author: "Chaim Eisenbach"
-collaborators: "Rachel Hia, Adina Bechhofer, Launy Schweiger"
+collaborators: "Rachel Hia, Launy Schweiger, Adina Bechhofer"
 date: "February 23, 2018"
 output: pdf_document
 ---
@@ -260,25 +260,53 @@ for (i in 1:nrow(iris)){
 
 ```{r}
 #TO-DO
+#y_binary = ifelse(y_binary == 1, 0, 1)
+MAX_ITER = 100
+w_vec = 0 
 
+X1 = as.matrix(iris[, 1, drop = FALSE])
+
+for (iter in 1 : MAX_ITER){  
+  for (i in 1 : nrow(X1)){
+    x_i = X1[i]
+    yhat_i = ifelse(sum(x_i * w_vec) > 0, 1, 0)
+    y_i = y[i]
+    w_vec = w_vec + (y_i - yhat_i) * x_i
+  }
+}
+yhat = ifelse(X1 %*% w_vec > 0, 1, 0)
+sum(y != yhat) / length(y)
 ```
 
 Does this make sense given the following summaries:
 
 ```{r}
 summary(iris[iris$Species == "setosa", "Sepal.Length"])
-summary(iris[iris$Species == "virginica", "Sepal.Length"])
+summary(iris[iris$Species == "versicolor", "Sepal.Length"])
 ```
 
 Write your answer here in English.
+Yes the summaries give us enough infromation to understand that the line we'd draw through the two sets of Sepal lengths would encounter an error(s). As there is some overlap in their lengths.
 
 10. Fit a perceptron model explaining `y` using all three features. Try to write your own code to do this. Provide the estimated parameters (i.e. the four entries of the weight vector)? What is the total number of errors this model makes?
 
 ```{r}
-perceptron = function(x,y,e,n){
-  
-}
+
 #TO-DO
+w_vec= rep(0,5)
+X2 = as.matrix(cbind(y,iris[, 1, drop = FALSE],iris[, 2, drop = FALSE],iris[, 3, drop = FALSE],iris[, 4, drop = FALSE]))
+
+for (iter in 1 : MAX_ITER){  
+  for (i in 1 : nrow(X2)){
+    x_i = X2[i,]
+    yhat_i = ifelse(sum(x_i * w_vec) > 0, 1, 0)
+    y_i = y[i]
+    w_vec = w_vec + (y_i - yhat_i) * x_i
+  }
+}
+yhat = ifelse(X2 %*% w_vec > 0, 1, 0)
+sum(y != yhat) / length(y)
+
 ```
 
 
