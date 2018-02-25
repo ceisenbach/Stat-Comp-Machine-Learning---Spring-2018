@@ -27,8 +27,9 @@ pacman::p_load(testthat)
 ```{r}
 #TO-DO
 v = seq(-100,100, by = 1) 
-```
 
+```
+This is dumb, why did you do this?
 Test using the following code:
 
 ```{r}
