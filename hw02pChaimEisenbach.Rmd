@@ -1,6 +1,6 @@
 ---
 title: "HW02p"
-author: "[Your Name Goes Here]"
+author: "[Chaim Eisenbach]"
 date: "March 6, 2018"
 output: pdf_document
 ---
@@ -45,8 +45,20 @@ Try your best to write a general perceptron learning algorithm to the following 
 #'                    \code{NULL} which means the function employs random standard uniform values.
 #' @return            The computed final parameter (weight) as a vector of length p + 1
 perceptron_learning_algorithm = function(Xinput, y_binary, MAX_ITER = 1000, w = NULL){
-  #TO-DO
+  if (is.null(w)){
+    w = runif(ncol(Xinput))
+ }
+  for (iter in 1 : MAX_ITER){  
+    for (i in 1 : nrow(Xinput)){
+      x_i = Xinput[i, ]
+      yhat_i = ifelse(x_i %*% w > 0, 1, 0)
+      w = w + as.numeric(y_binary[i] - yhat_i) * x_i
+    }
+  }
+  w
 }
+  #TO-DO
+
 ```
 
 Run the code on the simple dataset above via:
@@ -73,14 +85,21 @@ simple_viz_obj + simple_perceptron_line
 
 Why is this line of separation not "satisfying" to you?
 
+The line is too close to our values. We would rather have a line "in middle" of both sets of values.
+
 TO-DO
 
 
 
-2. Use the `e1071` package to fit an SVM model to `y_binary` using the predictors found in `X_simple_feature_matrix`. Do not specify
+2. Use the `e1071` package to fit an SVM model to `y_binary` using the predictors found in `X_simple_feature_matrix`. Do not specify lambda
 
 ```{r}
-svm_model = #TO-DO
+pacman::p_load(e1071)
+#svm_model = #TO-DO
+Xy_simple_feature_matrix = as.matrix(Xy_simple[, 2 : 3])
+lambda = 1e-9
+n = nrow(Xy_simple_feature_matrix)
+svm_model = svm(Xy_simple_feature_matrix, Xy_simple$response, kernel = "linear", scale = FALSE)  
 ```
 
 and then use the following code to visualize the line in purple:
@@ -98,7 +117,7 @@ simple_viz_obj + simple_perceptron_line + simple_svm_line
 ```
 
 Is this SVM line a better fit than the perceptron?
-
+It looks better. It seperates the data more evenly, as it's seemingly equidistant from the two sets of data.
 TO-DO
 
 3. Now write your own implementation of the linear support vector machine algorithm respecting the following spec making use of the nelder mead `optim` function from lecture 5p. It turns out you do not need to load the package `neldermead` to use this function. You can feel free to define a function within this function if you wish. 
@@ -162,10 +181,11 @@ For extra credit, in addition to the argument `k`, add an argument `d` represent
 
 ```{r}
 #not required TO-DO --- only for extra credit
+
 ```
 
 
-4. We move on to simple linear modeling using the ordinary least squares algorithm.
+5. We move on to simple linear modeling using the ordinary least squares algorithm.
 
 Let's quickly recreate the sample data set from practice lecture 7:
 
@@ -181,41 +201,67 @@ Solve for the least squares line by computing $b_0$ and $b_1$ _without_ using th
 
 ```{r}
 #TO-DO
+xbar = mean(x)
+ybar = mean(y)
+s_x = sqrt(sum((x-mean(x))^2/(length(x)-1)))
+s_y = sqrt(sum((y-mean(y))^2/(length(y)-1)))
+#xy = x*y
+#s_xy = sqrt(sum((xy-mean(xy))^2/(length(xy)-1)))
+s_xy = (sum(x*y) - (length(x)*xbar*ybar))/(length(x) -1)
+r = (s_xy)/(s_x*s_y)
+b_1 = r *(s_y/s_x)
+b_0 = ybar -( b_1 *xbar)
+b_1
+b_0
+
+#r1 = cor(x, y)
+#sx = sd(x)
+#sy = sd(y)
+#y_bar = mean(y)
+#x_bar = mean(x)
+
+#b1 = r1 * sy / sx
+#b0 = y_bar - b1 * x_bar
+#b0
+#b1
 ```
 
 Verify your computations are correct using the `lm` function in R:
 
 ```{r}
-lm_mod = #TO-DO
+lm_mod = lm(x ~ y)
 b_vec = coef(lm_mod)
 expect_equal(b_0, b_vec[1], tol = 1e-4)
 expect_equal(b_1, b_vec[2], tol = 1e-4)
 ```
 
-5. We are now going to repeat one of the first linear model building exercises in history --- that of Sir Francis Galton in 1886. First load up package `HistData`.
+6. We are now going to repeat one of the first linear model building exercises in history --- that of Sir Francis Galton in 1886. First load up package `HistData`.
 
 ```{r}
 #TO-DO
+if (!require("HistData")){install.packages("HistData")}
 ```
 
 In it, there is a dataset called `Galton`. Load it using the `data` command:
 
 ```{r}
 #TO-DO
+data(Galton)
 ```
 
 You now should have a data frame in your workspace called `Galton`. Summarize this data frame and write a few sentences about what you see. Make sure you report $n$, $p$ and a bit about what the columns represent and how the data was measured. See the help file `?Galton`.
 
 ```{r}
-#TO-DO
+summary(Galton)
 ```
+This is a set of data that compares the height of a child to their parents. Giving us two columns of height measured in inches. The data seems to say that the childs height is pretty similar to that of the parents, considering that the means are very close. n is 928, and p is 1.
 
-TO-DO
 
 Find the average height (include both parents and children in this computation).
 
 ```{r}
-avg_height = #TO-DO
+avg_height = (sum(Galton$parent)+sum(Galton$child))/(length(Galton$parent)+length(Galton$child))
+avg_height
 ```
 
 Note that in Math 241 you learned that the sample average is an estimate of the "mean", the population expected value of height. We will call the average the "mean" going forward since it is probably correct to the nearest tenth of an inch with this amount of data.
@@ -223,30 +269,41 @@ Note that in Math 241 you learned that the sample average is an estimate of the 
 Run a linear model attempting to explain the childrens' height using the parents' height. Use `lm` and use the R formula notation. Compute and report $b_0$, $b_1$, RMSE and $R^2$. Use the correct units to report these quantities.
 
 ```{r}
-#TO-DO
+mod = lm(parent ~ child, data = Galton)
+coef(mod)
+summary(mod)$r.squared
+summary(mod)$sigma
+b = coef(mod)
 ```
 
 Interpret all four quantities: $b_0$, $b_1$, RMSE and $R^2$.
+$b_0$ - The regression seems to say that if the parents height is 0 the childs height would be 46 inches.
+$b_1$ - The slope of the model is 0.3256475.
+$R^2$ - The parents height only accounts for 21% of the childs height.
+RMSE - The error between the two data sets is off by around 3 inches in 95% of our predictions.
 
-TO-DO
 
 How good is this model? How well does it predict? Discuss.
 
-TO-DO
+This model doesn't seem very accurate considering the $R^2$ and RMSE values. 3 inches seems like a pretty big margin considering how close all the heights are in general. And our $R^2$ also tells us that our model doesn't explain all that much about a childs height based on parents height.
+
 
 Now use the code from practice lecture 8 to plot the data and a best fit line using package `ggplot2`. Don't forget to load the library.
 
 ```{r}
-#TO-DO
+ggplot(Galton, aes(parent, child)) + 
+  geom_point() + 
+  geom_smooth(method = 'lm')
 ```
 
 It is reasonable to assume that parents and their children have the same height. Explain why this is reasonable using basic biology.
 
-TO-DO
+I think it's reasonable that children would have heights very close to their parents based on genetics alone. However, considering all the other factors in a human beings development including nutrition, it may not be the most comprehensive predictor.
 
 If they were to have the same height and any differences were just random noise with expectation 0, what would the values of $\beta_0$ and $\beta_1$ be?
 
-TO-DO
+If the heights matched up exactly then x = y, and the intercept would be 0 and the slope would be 1.
+
 
 Let's plot (a) the data in $\mathbb{D}$ as black dots, (b) your least squares line defined by $b_0$ and $b_1$ in blue, (c) the theoretical line $\beta_0$ and $\beta_1$ if the parent-child height equality held in red and (d) the mean height in green.
 
@@ -254,7 +311,7 @@ Let's plot (a) the data in $\mathbb{D}$ as black dots, (b) your least squares li
 ggplot(Galton, aes(x = parent, y = child)) + 
   geom_point() + 
   geom_jitter() +
-  geom_abline(intercept = b_0, slope = b_1, color = "blue", size = 1) +
+  geom_abline(intercept = b[1], slope = b[2], color = "blue", size = 1) +
   geom_abline(intercept = 0, slope = 1, color = "red", size = 1) +
   geom_abline(intercept = avg_height, slope = 0, color = "darkgreen", size = 1) +
   xlim(63.5, 72.5) + 
@@ -264,17 +321,21 @@ ggplot(Galton, aes(x = parent, y = child)) +
 
 Fill in the following sentence: 
 
-TO-DO: Children of short parents became ... on average and children of tall parents became ... on average.
+Children of short parents became short on average and children of tall parents became tall on average.
 
 Why did Galton call it "Regression towards mediocrity in hereditary stature" which was later shortened to "regression to the mean"?
 
-TO-DO
+It's unstable in the short run but after a while it will be closer to the average. Even if there are extremely tall or short parents overall, on average, there will be a ''regression to the average 'movement' towards the average.
+
 
 Why should this effect be real?
 
-TO-DO
+Any singular measurement can stand the risk of failing our predictions. Like sometimes guessing the anwers on a test can yield positive or negative results. But done multiple times it will yield 'mediocre' results i.e. you will only get half right if done on a true/false exam.
+
+
 
 You now have unlocked the mystery. Why is it that when modeling with $y$ continuous, everyone calls it "regression"? Write a better, more descriptive and appropriate name for building predictive models with $y$ continuous.
 
-TO-DO
+Estimation or prediction could be better words. They don't make any assumptions about the behavior of the data initially, while Regression seems to imply a very specific thing about the behavior of the data which may or may not be true.
+
 
