@@ -135,7 +135,7 @@ Note there are differences between this spec and the perceptron learning algorit
 #' @param lambda      A scalar hyperparameter trading off margin of the hyperplane versus average hinge loss.
 #'                    The default value is .1.
 #' @return            The computed final parameter (weight) as a vector of length p + 1
-  linear_svm_learning_algorithm = function(Xinput, y_binary, MAX_ITER = 5000, lambda = .1){
+  linear_svm_learning_algorithm = function(Xinput, y_binary, MAX_ITER = 5000, lambda = 1){
   p = ncol(Xinput)
   Xinput = cbind(1, Xinput)
   w_0 = rep(0, p + 1)
@@ -155,10 +155,10 @@ Run your function using the defaults and plot it in brown vis-a-vis the previous
 ```{r}
 svm_model_weights = linear_svm_learning_algorithm(X_simple_feature_matrix, y_binary)
 my_svm_line = geom_abline(
-    intercept = -svm_model_weights[1] / svm_model_weights[3], 
+    intercept = svm_model_weights[1] / svm_model_weights[3], 
     slope = -svm_model_weights[2] / svm_model_weights[3], 
     color = "brown")
-simple_viz_obj + simple_svm_line + my_svm_line
+simple_viz_obj  + my_svm_line
 ```
 
 Is this the same as what the `e1071` implementation returned? Why or why not?
@@ -173,22 +173,20 @@ Is this the same as what the `e1071` implementation returned? Why or why not?
 #' @param Xtest       The test data that the algorithm will predict on as a n* x p matrix.
 #' @return            The predictions as a n* length vector.
 
-  nn_algorithm_predict = function(Xinput, y_binary, Xtest){ #first row, dot with second row
+nn_algorithm_predict = function(Xinput, y_binary, Xtest){ #first row, dot with second row
   #TO-DO
-  best_sqd_distance = Inf #good place to begin
+  best_sqd_distance = 1000 #good place to begin
   i_star = NA
   for (i in 1 : nrow(Xinput)){
-    dsqd = (Xinput[i, 1] - x_star)^2
-    if (dsqd < best_sqd_distance){
-      best_sqd_distance = dsqd
-      i_star = i
+    eucl = sqrt(((sum((Xinput[i, ] - Xtest[i,])^2))))
+    if (eucl < best_sqd_distance){
+      best_sqd_distance = eucl
+      i_star = best_sqd_distance
     }
   }
-  y_binary[i_star]
-  
+  y = i_star
+  y
 }
-
-
 
 
 ```
@@ -197,7 +195,10 @@ Write a few tests to ensure it actually works:
 
 ```{r}
 #TO-DO
-nntest = nn_algorithm_predict(X_simple_feature_matrix, y_binary, 1)
+
+#test = matrix(runif(12), nrow=3, ncol=2) 
+nntest = nn_algorithm_predict(X_simple_feature_matrix, y_binary, X_simple_feature_matrix)
+expect_equal(as.vector(nntest),  0)
 ```
 
 For extra credit, add an argument `k` to the `nn_algorithm_predict` function and update the implementation so it performs KNN. In the case of a tie, choose $\hat{y}$ randomly. Set the default `k` to be the square root of the size of $\mathcal{D}$ which is an empirical rule-of-thumb popularized by the "Pattern Classification" book by Duda, Hart and Stork (2007). Also, alter the documentation in the appropriate places.
