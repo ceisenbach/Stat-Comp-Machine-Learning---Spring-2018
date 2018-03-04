@@ -5,7 +5,7 @@ date: "March 6, 2018"
 output: pdf_document
 ---
 ```{r}
-knitr::opts_chunk$set(error = TRUE) #this allows errors to be printed into the PDF
+#knitr::opts_chunk$set(error = TRUE) #this allows errors to be printed into the PDF
 ```
 Welcome to HW02p where the "p" stands for "practice" meaning you will use R to solve practical problems. This homework is due 11:59 PM Tuesday 3/6/18. 
 
@@ -163,7 +163,7 @@ simple_viz_obj  + my_svm_line + simple_svm_line
 
 Is this the same as what the `e1071` implementation returned? Why or why not?
 
-This is not the same. 
+This is not the same. while they have the same slope, however one is closer to one set of data than the other.
 
 4. Write a $k=1$ nearest neighbor algorithm using the Euclidean distance function. Respect the spec below:
 
