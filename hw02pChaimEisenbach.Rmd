@@ -196,7 +196,7 @@ nn_algorithm_predict = function(Xinput, y_binary, Xtest){
   i_star = NA
     for (i in 1 : nrow(Xtest) ){
       for(index in 1:nrow(Xinput)){
-         eucl = sum((Xinput[i,] - Xtest[i,])^2)
+         eucl = sqrt(sum((Xinput[i,] - Xtest[i,])^2))
          if (eucl < best_sqd_distance){
         best_sqd_distance = eucl
         i_star = i
