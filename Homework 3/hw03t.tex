@@ -1,0 +1,260 @@
+\documentclass[12pt]{article}
+
+\include{preamble}
+
+\newtoggle{professormode}
+%\toggletrue{professormode} %STUDENTS: DELETE or COMMENT this line
+
+
+
+\title{MATH 390.4 / 650.2 Spring 2018 Homework \#3t}
+
+\author{Chaim Eisenbach} %STUDENTS: write your name here
+
+
+\iftoggle{professormode}{
+\date{Due 11:59PM Friday, March 23, 2018 under the door of KY604 \\ \vspace{0.5cm} \small (this document last updated \today ~at \currenttime)}
+}
+
+\renewcommand{\abstractname}{Instructions and Philosophy}
+
+\begin{document}
+\maketitle
+
+\iftoggle{professormode}{
+\begin{abstract}
+The path to success in this class is to do many problems. Unlike other courses, exclusively doing reading(s) will not help. Coming to lecture is akin to watching workout videos; thinking about and solving problems on your own is the actual ``working out.''  Feel free to \qu{work out} with others; \textbf{I want you to work on this in groups.}
+
+Reading is still \textit{required}. For this homework set, read about all the concepts introduced in class online e.g. multivariate least squares linear modeling, orthogonal projections, QR decomposition, etc. This is your responsibility to supplement in-class with your own readings. Also, read ch 2 in Silver and 2--4 in Finlay.
+
+The problems below are color coded: \ingreen{green} problems are considered \textit{easy} and marked \qu{[easy]}; \inorange{yellow} problems are considered \textit{intermediate} and marked \qu{[harder]}, \inred{red} problems are considered \textit{difficult} and marked \qu{[difficult]} and \inpurple{purple} problems are extra credit. The \textit{easy} problems are intended to be ``giveaways'' if you went to class. Do as much as you can of the others; I expect you to at least attempt the \textit{difficult} problems. 
+
+This homework is worth 100 points but the point distribution will not be determined until after the due date. See syllabus for the policy on late homework.
+
+Up to 10 points are given as a bonus if the homework is typed using \LaTeX. Links to instaling \LaTeX~and program for compiling \LaTeX~is found on the syllabus. You are encouraged to use \url{overleaf.com}. If you are handing in homework this way, read the comments in the code; there are two lines to comment out and you should replace my name with yours and write your section. The easiest way to use overleaf is to copy the raw text from hwxx.tex \emph{and} preamble.tex into two new overleaf tex files with the same name. If you are asked to make drawings, you can take a picture of your handwritten drawing and insert them as figures or leave space using the \qu{$\backslash$vspace} command and draw them in after printing or attach them stapled.
+
+The document is available with spaces for you to write your answers. If not using \LaTeX, print this document and write in your answers. I do not accept homeworks which are \textit{not} on this printout. Keep this first page printed for your records.
+
+\end{abstract}
+
+\thispagestyle{empty}
+\vspace{1cm}
+NAME: \line(1,0){380}
+\clearpage
+}
+
+\problem{These are questions about Silver's book, chapter 2.}
+
+
+\begin{enumerate}
+
+\intermediatesubproblem{If one's goal is to fit a model for a phenomenon $y$, what is the difference between the approaches of the hedgehog and the fox? Answer using notation from class (i.e. $t ,f, g, h^*, \delta, \epsilon, e, t, z_1, \ldots, z_t, \mathbb{D}, \mathcal{H}, \mathcal{A}, \mathcal{X}, \mathcal{Y}, X, y, n, p, x_{\cdot 1}, \ldots, x_{\cdot p}, x_{1 \cdot}, \ldots, x_{n \cdot}$, etc.). Connecting this to the modeling framework should really make you think about what Tetlock's observation means for political and historical phenomena.}\spc{4} \\
+For a fox there are multiple $x's$ that are closer to our $z's$. Also, they reduce our errors by having a larger data set and a more nuanced algorithm. As opposed to hedgehogs whose $x's$ may not be as close to our $z's$. Also Hedgehogs stick with one $\mathcal{A}$ while Fox's can adjust their $\mathcal{A}$ depending on new information to get a better $g$.\\
+
+\easysubproblem{Why did Harry Truman like hedgehogs? Are there a lot of people that think this way?}\spc{4}\\
+
+He wanted definite answers to issues. This can be seen in a lot of his policy moves. Such as dropping the atom bombs, the containment plan, the Korean war, union strikes etc. He wasn't interested in a less definitive more nuanced opinion. \\
+Many people thing this way. It is easier to think of something in concrete terms than in more nuanced ones. BIG BOLD PREDICTIONS\\
+
+\hardsubproblem{Why is it that the more education one acquires, the less accurate one's predictions become?}\spc{4}
+
+They have more opportunities to permute and manipulate the information they have to confirm their biases.\\
+
+\easysubproblem{Why are probabilistic classifiers (i.e. algorithms that output functions that return probabilities) better than vanilla classifiers (i.e. algorithms that only return the class label)? We will move in this direction in class soon.}\spc{4}
+
+Returning a probability is better than returning a definitive answer. We want a range of possible outcomes, which would be a more honest expression of the uncertainty found in the real world. It would be foolish to pin things down to an exact number.\\
+\end{enumerate}
+
+\problem{These are questions about Finlay's book, chapter 2-4. We will hold off on chapter 1 until we cover probability estimation after midterm 2.}
+
+
+\begin{enumerate}
+
+\easysubproblem{What term did we use in class for \qu{behavioral (outome) data}?}\spc{0}
+
+$Y$: output space.
+
+\easysubproblem{Write about some reasons why data scientists implement models that are subpar in predictive performance (p27).}\spc{3}\\
+There are business requirements and constraints that need to be taken into account. Sacrifice a small amount of predictive accuracy to ensure that business requirements are met. In a real business environment the bottom line comes before perfection.\\
+
+\easysubproblem{In the first wine example, what is the outcome metric and what kind of supervised learning was employed?}\spc{0}\\
+Weighted scores, they used a decision tree which is a typed of classification model.
+
+\easysubproblem{In the second wine example, what is the outcome metric and kind of supervised learning was employed?}\spc{0}
+
+A regression, profits are being measured.
+
+\easysubproblem{In the third chapter, why is it that some organizations cannot use predictive modeling to improve their business?}\spc{3}\\
+cultural norms. Organizations have a set way of doing things. Which is why Finlay prefers "embedded analytics" over an "analytics culture".
+
+\easysubproblem{In the bankruptcy case, what is the problem with merely using $g$ to obtain a $\hat{y}$ without any other information from the model?}\spc{3}\\
+The model to predict these didn't take into account how rare foreclosure actually is. They ignored the culture. They couldn't differentiate between a good model and good business.
+
+\easysubproblem{Chapter 3 talks about using the model with human judgment. Under what circumstances is this beneficial? Answer using notation from class (i.e. $t ,f, g, h^*, \delta, \epsilon, e, t$, $z_1, \ldots, z_t, \mathbb{D}, \mathcal{H}, \mathcal{A}, \mathcal{X}, \mathcal{Y}, X, y, n, p, x_{\cdot 1}, \ldots, x_{\cdot p}, x_{1 \cdot}, \ldots, x_{n \cdot}$, etc.).}\spc{3}
+
+With human judgment it is easier to get closer to $f$, to develop a better algorithm. To give greater weight to more important $x's$. 
+
+\hardsubproblem{In Chapter 4 Finlay makes an interesting observation based on his experience in data science. He says most predictive models have $p \leq 30$. Why do you think this is? Discuss.}\spc{5}\\
+Even though according to Silver it is important to look at many different causes for an event to make better and more accurate predictions. Finlay is telling us that once you surpass a certain number of variables you no longer have information useful enough to improve your algorithm or whatever you are trying to do. There is a limited number of really important factors in determining the cause of something.\\
+
+\easysubproblem{He says there is \qu{almost always other data that could be acquired ... [which] doesn't always come for free}. The \qu{data} he is talking about here specifically means \qu{more predictors} i.e. increasing $p$. In what cases would someone be willing to pay for this data?}\spc{3}\\
+
+Pre-sifted data save the time to find your own good data among all the useless data.
+Predictive analytics is good business. An investment in good data can produce a more profitable business model. Having better data leads to a more accurate model.
+
+\easysubproblem{Table 4 lists \qu{data types} about what type of observations?}\spc{1}
+Behavior of interest. To predict burglary.
+
+\easysubproblem{What type of data does he find in his experience to be the most important to predictive modeling? Why do you think this is so?}\spc{3}\\
+Data about primary behavior. It predicts a certain pattern about ones behavior.
+\easysubproblem{If $x_{\cdot 17}$ was age and $x_{\cdot 18}$ is age of spouse, what is the most likely reason why adding $x_{\cdot 18}$ to $\mathbb{D}$ not be fruitful for predictive ability?}\spc{3}
+
+It will provide only incremental benefit to the model. If we know one spouses age we already have a pretty good picture of the range of the other spouses age. "If new data is highly correlated with existing data then it won't add much to the power of your predictions".
+
+\hardsubproblem{What is the lifespan of a predictive model? Why does it not last forever? Answer using notation from class (i.e. $t ,f, g, h^*, \delta, \epsilon, e, t$, $z_1, \ldots, z_t, \mathbb{D}, \mathcal{H}, \mathcal{A}, \mathcal{X}, \mathcal{Y}, X, y, n, p$, $x_{\cdot 1}, \ldots, x_{\cdot p}, x_{1 \cdot}, \ldots, x_{n \cdot}$, etc.).}\spc{3}
+
+Eventually reality veers away from our model. So our $x's$ are further away from our $z's$ which are different from the initial $z's$. Also, our $g$ strays away from $f$, maybe $f$ leaves our $\mathcal{H}$ entirely.
+\hardsubproblem{What does \qu{large enough to representative of the full population} (p80) mean? Answer using notation from class (i.e. $t ,f, g, h^*, \delta, \epsilon, e, t$, $z_1, \ldots, z_t, \mathbb{D}, \mathcal{H}, \mathcal{A}, \mathcal{X}, \mathcal{Y}, X, y, n, p$, $x_{\cdot 1}, \ldots, x_{\cdot p}, x_{1 \cdot}, \ldots, x_{n \cdot}$, etc.).}\spc{3}\\
+We need a $\mathbb{D}$ that encompasses enough X and Y to become closer to $t$. Essentially enough to get to a $\mathcal{H}$ that encompasses an $h^*$ that is close enough to an $f$ that is close enough to $t$. \\
+\easysubproblem{Is there a hype about \qu{big data} i.e. including millions of observations instead of a few thousand? Discuss Finlay's opinion.}\spc{3}\\
+
+According to Finlay data is only important if it's good data. Storage has become so cheap that there is a lot of useless data that needs to be sifted through.
+
+\easysubproblem{What is Finlay's solution to \qu{overfitting} (p84)?}\spc{5}
+
+It will be less likely to occur if there are large samples being used.
+
+\end{enumerate}
+
+
+\problem{These are questions about association and correlation.}
+
+
+\begin{enumerate}
+
+\easysubproblem{Give an example of two variables that are both correlated and associated by drawing a plot.}\spc{4}
+\includegraphics[scale =0.04]{corr.jpg}
+\easysubproblem{Give an example of two variables that are not correlated but are associated by drawing a plot.}\spc{4}
+\includegraphics[scale =0.04]{assoc.jpg}
+\easysubproblem{Give an example of two variables that are not correlated nor associated by drawing a plot.}\spc{4}
+\includegraphics[scale =0.04]{non.jpg}
+\easysubproblem{Can two variables be correlated but not associated? Explain.}\spc{4}
+No. correlation $\in$ association.\\
+
+\end{enumerate}
+
+\problem{These are questions about multivariate linear model fitting using the least squares algorithm.}
+
+\begin{enumerate}
+
+\hardsubproblem{Derive $\partialop{\c}{\c^\top A \c}$ where $\c \in \reals^n$ and $A \in \reals^{n \times n}$ but \textit{not} symmetric. Get as far as you can.}\spc{8}\\
+Looking at: ${\c^\top A \c}$ = $c_1(c_{11} + c_2a_{21} .... c_n a_{n1}) + c_2 (ca_{21} + ... + ca_{2n}) + c_n .....$\\
+$\Rightarrow \sum\limits_{i=1}^n c_i \sum\limits_{j=1}^n c_ja_{ij}$\\
+ $\partialop{\c_i}{\c^\top A \c} = \sum\limits_{j=1}^n c_ja_{ij} + c_ja_{ji}$
+
+\easysubproblem{Given matrix $X \in \reals^{n \times (p+1)}$, full rank and first column consisting of the $\onevec_n$ vector, rederive the least squares solution $\b$ (the vector of coefficients in the linear model shipped in the prediction function $g$). No need to rederive the facts about vector derivatives.}\spc{10}
+
+$\partialop{\w} {\vec{y}^\top \vec{y} - 2 \vec{w}^\top x^\top \vec{y} + \vec{w}^\top (x^\top x) \vec{w} } = 0_{p+1}^\top \Rightarrow (x^\top x)^{-1} x^\top x \vec{w} = (x^\top x)^{-1} x^\top \vec{y}$\\
+
+$\vec{b} = (x^\top x)^{-1} x^\top \vec{y}$
+
+\intermediatesubproblem{Consider the case where $p = 1$. Show that the solution for $\b$ you just derived is the same solution that we proved for simple regression in Lecture 8. That is, the first element of $\b$ is the same as $b_0 = \ybar - r \frac{s_y}{s_x}\xbar$ and the second element of $\b$ is $b_1 = r \frac{s_y}{s_x}$.} \spc{10}
+$(X^\top X)^{-1} X^\top \vec{y} = \frac{1}{n \sum x_i^2 - n^2 \bar{x}^2}\begin{pmatrix}
+\sum x_i^2 & -n\bar{x}\\ -n \bar{x} & n
+\end{pmatrix}_ {(X^\top X)^{-1}} * \begin{pmatrix}
+1 & . & . & . 1 \\ x_1 & .&.&.& x_n
+\end{pmatrix}_{X^\top}
+\begin{pmatrix}
+y_1 \\ . \\ . \\.  \\ y_n
+\end{pmatrix}_ {\vec{y}}$
+\\
+
+$=\frac{1}{n \sum x_i^2 - n^2 \bar{x}^2}\begin{pmatrix}
+\sum x_i^2 & -n\bar{x}\\ -n \bar{x} & n
+\end{pmatrix}_ {(X^\top X)^{-1}}
+\begin{pmatrix}
+n\bar{y}\\\sum y_i x_i
+\end{pmatrix}_{X^\top \vec{y}}
+= \frac{1}{n \sum x_i^2 - n^2 \bar{x}^2}
+\begin{pmatrix}
+n \bar{y} \sum x_i^2 & - n \sum y_i x_i\\ -n^2 \bar{x} \bar{y} & + n \sum y_i x_i
+\end{pmatrix}\\
+b_0 = \frac{\bar{y}(\sum x_i^2-n\bar{x}^2) - \bar{x} (\sum y_i x_i -n \bar{x}\bar{y} )}{\sum x_i^2 - n \bar{x}^2}\\
+b_1 = \frac{\sum x_i y_i - n \bar{x} \bar{y}}{\sum x_i^2 -n\bar{x}^2}
+$
+\\
+
+\easysubproblem{If $X$ is rank deficient, how can you solve for $\b$? Explain in English.} \spc{2}
+
+Eliminate the linearly dependent vectors.
+
+\hardsubproblem{Prove $\rank{X} =\rank{X^\top X}$.}\spc{6}
+
+%Assume $\rank{X} < p+1$ and  $\rank{X^\top X} = p+1.\\ 
+%\exists \vec{u} \neq 0 \in \reals^{p+1}$. Then $X \vec{u} = %\vec{0}_{p+1} \Rightarrow (X^\top X)$ not full rank $\Rightarrow$ %contradiction. 
+
+Rank-Nullity Theorem: $\rank{X} = p+1 - \dim{(null(x))} = p+1 - \dim(null(X^\top X)) = \rank{X^\top X}$\\
+
+
+\hardsubproblem{Given matrix $X \in \reals^{n \times (p+1)}$, full rank and first column consisting of the $\onevec_n$ vector, now consider cost multiples (\qu{weights}) $c_1, c_2, \ldots, c_n$ for each mistake $e_i$. As an example, previously the mistake for the 17th observation was $e_{17} := y_{17} - \hat{y}_{17}$ but now it would be $e_{17} := c_{17} (y_{17} - \hat{y}_{17})$.  Derive the weighted least squares solution $\b$. No need to rederive the facts about vector derivatives. Hints: (1) show that SSE is a quadratic form with the matrix $C$ in the middle (2) Split this matrix up into two pieces i.e. $C = C^{\half} C^{\half}$, distribute and then foil (3) note that a scalar value equals its own transpose and (4) use the vector derivative formulas.}\spc{20}\\
+$\sum c_i (y_i - x_i w)^2\\ (y-xw)^\top c(y-xw)\\(y^\top cy - y^\top cxw - w^\top x^\top cy + w^\top x^\top cxw)\\$ taking the derivative we get $ 2(-x^\top cy + x^\top cxb) = 0\\ b= (x^\top cx)^{-1} x^\top cy$
+\\
+\hardsubproblem{If $p=1$, prove $r^2 = R^2$ i.e. the linear correlation is the same as proportion of sample variance explained in a least squares linear model.}\spc{6}\\
+$R^2 = \frac{SSR}{SST} = \frac{\sum (\hat{y}- \bar{y})^2}{\sum (y - \bar{y})^2} \Rightarrow \frac{(\sum (x - \bar{x}) (y-\bar{y}))^2}{(\sum (x - \bar{x}))^2 (\sum(y-\bar{y}))^2} \Rightarrow \frac{Cov(x,y)^2}{S_x^2 S_y^2 } = r^2$
+\\
+\intermediatesubproblem{Prove that the point $<1,\xbar_1, \xbar_2, \ldots, \xbar_p, \bar{y}>$ is a point on the least squares linear solution.}\spc{13}\\
+$\bar{y} = \frac{1}{n} \sum b_0 +b_1x_{i1}+...+b_nx_in$\\ 
+$\bar{y} = b_0 +b_1\bar{x}_n +...+ b_n \bar{x}_n$\\
+So the line goes through the averages of x and y.
+\\
+
+\end{enumerate}
+
+\problem{These are questions related to the concept of orthogonal projection, QR decomposition and its relationship with least squares linear modeling.}
+
+\begin{enumerate}
+
+\easysubproblem{Consider least squares linear regression using a design matrix $X$ with rank $p + 1$. What are the degrees of freedom in the resulting model? What does this mean?}\spc{3}
+
+$p + 1$ the degrees of freedom because it is the dimension of the column space of X. It's the independent pieces of data.
+
+\intermediatesubproblem{If you are orthogonally projecting the vector $\y$ onto the column space of $X$ which is of rank $p + 1$, derive the formula for $\proj{\colsp{X}}{\y}$. Is this the same as the least squares solution?}\spc{6}\\
+$\mathcal{X}$ = $\colsp{x}$\\ $\proj{\mathcal{X}}{\vec{\y}}$ = $X \vec{w}$\\ $X^\top (X \vec{w} - \vec{y}) = 0 \Leftarrow$ Because perpendicular. \\ $X^\top X \vec{w} = X^\top \vec{y}$\\ $\vec{w} = (X^\top X)^{-1} X^\top \vec{y}$\\ $X \vec{w} =X(X^\top X^{-1}) X^\top \vec{y}$\\ $\proj{\mathcal{X}}{\y} = X(X^\top X)^{-1} X^\top \vec{y}$
+
+\hardsubproblem{We saw that the perceptron is an \textit{iterative algorithm}. This means that it goes through multiple iterations in order to converge to a closer and closer $\w$. Why not do the same with linear least squares regression? Consider the following. Regress $\y$ using $\X$ to get $\yhat$. This generates residuals $\e$ (the leftover piece of $\y$ that wasn't explained by the regression's fit, $\yhat$). Now try again! Regress $\e$ using $\X$ and then get new residuals $\e_{new}$. Would $\e_{new}$ be closer to $\zerovec_n$ than the first $\e$? That is, wouldn't this yield a better model on iteration \#2? Yes/no and explain.}\spc{10}
+No, because the projection is the minimum error.
+
+\intermediatesubproblem{Prove that $Q^\top = Q^{-1}$ where $Q$ is an orthonormal matrix such that $\colsp{Q} = \colsp{X}$ and $Q$ and $X$ are both matrices $\in \reals^{n \times (p+1)}$. Hint: this is purely a linear algebra exercise.}\spc{10}\\
+ $Q^\top Q =\begin{pmatrix}
+q_1^\top \\
+.\\.\\.\\q_n^\top
+\end{pmatrix}  
+\begin{pmatrix} q_1&.&.&.&q_n 
+\end{pmatrix} = I_{p+1}$ \\
+$Q^\top Q = I$\\
+So $Q^\top = Q^{-1}$
+
+\intermediatesubproblem{Prove that the least squares projection $H = \XXtXinvXt$ is the same as $QQ^\top$.}\spc{10}\\
+$X \in \reals ^{n\times n}$\\ $X = QR$, $Q^\top Q = I_n$, $R \in \reals^{n \times n}$\\ $(X^\top X)^{-1} X^\top = (R^\top Q^\top QR)^{-1}R^\top Q^\top = R^{-1}Q^\top$\\ $H = X(X^\top X)^{-1} X^\top = X R^{-1} Q^\top = QQ^\top $
+
+\intermediatesubproblem{Prove that an orthogonal projection onto the $\colsp{Q}$ is the same as the sum of the projections onto each column of $Q$.}\spc{10}\\
+$\proj{Q}{\vec{a}} = Q(Q^\top Q)^{-1} Q^\top \vec{a}= \sum\limits_{j=1}^{k} \frac{\vec{q_j}\vec{q_j}^\top}{\norm{\vec{q_j}}^2} = \sum\limits_{j=1}^{k} \vec{q_j}\vec{q_j}^\top \vec{a} = QQ^\top \vec{a}$
+\\
+\hardsubproblem{Trouble in paradise. Prove that the SSE of a multivariate linear least squares model always decreases (equivalently, $R^2$ always increases) upon the addition of a new independent predictor. Keep in mind this holds true even if this new predictor has no information about the true causal inputs to the phenomenon $y$.}\spc{12} \\
+
+As SSR $\uparrow \Rightarrow$ SSE $\downarrow$ because SST = SSR + SSE\\
+Adding a new piece, means rank is now $p+1+1$\\
+SSR = $\sum\limits_{i=1}^n (\hat{y_i} -\bar{y})^2 = \sum y_i^2 - n \bar{y^2} = \sum\limits_{j=1}^{p+1} \norm{\proj{qj}{\vec{y}}}^2 + \norm{\proj{q_{new}}{\vec{y}}}^2$ \\
+$\Rightarrow SSR_{new} \geq SSR \Rightarrow SSE_{new} \leq SSE \Rightarrow R_{new}^2 \geq R^2$\\
+
+
+\intermediatesubproblem{Why is this a bad thing? Explain in English.}\spc{3}\\
+$R^2$ can be made to look very good by adding more parameters without our model actually being better.\\
+
+
+\extracreditsubproblem{Prove that $\rank{H} =\tr{H}$.}\spc{-0.5}
+$\tr{H} = \tr{X(X^\top X)^{-1} X^{-1}} =\tr{X^\top X(X^\top X)^{-1}} = \tr{I_{p+1}} = p+1$
+\end{enumerate}
+
+
+\end{document}
