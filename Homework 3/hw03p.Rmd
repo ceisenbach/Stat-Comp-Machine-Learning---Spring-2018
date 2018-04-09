@@ -91,11 +91,11 @@ Yes
 
 
 Does diamond cut appear to be independent of diamond depth?
-Yes
+Not necessarily
 
 
 Do these plots allow you to assess well if diamond cut is independent of diamond price? Yes / no
-Yes
+No
 
 
 We never discussed in class bivariate plotting if both variables were categorical. Use the geometry "jitter" to visualize color vs clarity. visualize price using different colors. Use a small sized dot.
@@ -131,6 +131,7 @@ What is $b$, $R^2$ and the RMSE? What was the standard error of price originally
 coef(mod)
 summary(mod)$r.squared
 summary(mod)$sigma
+sd(diamonds$price)
 ```
 
 Are these metrics expected given the appropriate or relevant visualization(s) above?
@@ -151,6 +152,7 @@ What is $b$, $R^2$ and the RMSE? What was the standard error of price originally
 coef(mod2)
 summary(mod2)$r.squared
 summary(mod2)$sigma
+sd(diamonds$price)
 ```
 
 Are these metrics expected given the appropriate or relevant visualization(s) above?
@@ -172,6 +174,7 @@ What is $b$, $R^2$ and the RMSE? What was the standard error of price originally
 coef(anova_mod1)
 summary(anova_mod1)$r.squared
 summary(anova_mod1)$sigma
+sd(diamonds$price)
 ```
 
 Are these metrics expected given the appropriate or relevant visualization(s) above?
@@ -236,11 +239,11 @@ summary(mod3)$sigma
 ```
 
 Interpret all entries in the vector $b$.
-The intercept is color D, cut Fair, clarity I1. 
+The intercept is color D, cut Fair, clarity I1. Each slope for each variable is the increase or decrease in price from that variable.
 **TO-DO
 
 Are these metrics expected given the appropriate or relevant visualization(s) above? Can you tell from the visualizations?
-
+It's difficult to tell from the visualizations, except for carat
 **TO-DO
 
 Comment on why $R^2$ is high. Think theoretically about diamonds and what you know about them.
@@ -265,7 +268,8 @@ ggplot(data.frame(null_residuals = diamonds$price - mean(diamonds$price), residu
 
 5. Reference your visualizations above. Does price vs. carat appear linear?
 
-Yes
+Yes-ish
+
 ** TO-DO
 
 Upgrade your model in #4 to use one polynomial term for carat.
@@ -285,11 +289,11 @@ summary(mod4)$sigma
 ```
 
 Interpret each element in $b$ just like previously. You can copy most of the text from the previous question but be careful. There is one tricky thing to explain.
-
+The intercept is color D, cut Fair, clarity I1. Each slope for each variable is the increase or decrease in price from that variable. carat^2 is negative because when we extrapolate a polynomial it will eventually go down.
 **TO-DO
 
 Is this an improvement over the model in #4? Yes/no and why.
-Very slightly
+Yes the rmse is lower and r-squared is higher
 **TO-DO
 
 Define a function $g$ that makes predictions given a vector of the same features in $\mathbb{D}$.
@@ -310,7 +314,6 @@ g = function(vec){
 6. Use `lm` to run a least squares linear regression using a polynomial of color of degree 2 to explain price.  
 
 ```{r}
-#TO-DO
 degree_2_poly_mod1 = lm(price ~ poly(color, 2, raw = TRUE), diamonds)
 
 ```
@@ -326,47 +329,72 @@ Color is categorical
 #head(Xmm, 20)
 
 #TO-DO
-#diamonds1 = diamonds
-#diamonds1$fair = ifelse(diamonds1$cut =="Fair", 1,0)
-#diamonds1$good = ifelse(diamonds1$cut =="Good", 1,0)
-#diamonds1$very_good = ifelse(diamonds1$cut =="Very Good", 1,0)
-#diamonds1$premium = ifelse(diamonds1$cut =="Premium", 1,0)
-#diamonds1$ideal = ifelse(diamonds1$cut =="Ideal", 1,0)
-#diamonds1$d = ifelse(diamonds1$color =="D", 1,0)
-#diamonds1$e = ifelse(diamonds1$color =="E", 1,0)
-#diamonds1$f = ifelse(diamonds1$color =="F", 1,0)
-#diamonds1$h = ifelse(diamonds1$color =="H", 1,0)
-#diamonds1$i = ifelse(diamonds1$color =="I", 1,0)
-#diamonds1$j = ifelse(diamonds1$color =="J", 1,0)
-#diamonds1if = ifelse(diamonds1$clarity =="IF",1,0)
-#diamonds1$vvs1 = ifelse(diamonds1$clarity =="VVS1", 1,0)
-#diamonds1$vvs2 = ifelse(diamonds1$clarity =="VVS2", 1,0)
-#diamonds1$vs1 = ifelse(diamonds1$clarity =="VS1", 1,0)
-#diamonds1$vs2 = ifelse(diamonds1$clarity =="VS2", 1,0)
-#diamonds1$si1 = ifelse(diamonds1$clarity =="SI1", 1,0)
-#diamonds1$si2 = ifelse(diamonds1$clarity =="SI2", 1,0)
-#diamonds1$cut = NULL
-#diamonds1$color = NULL
-#diamonds1$clarity = NULL
-diamonds2 = diamonds
-diamonds2$cut = factor(as.numeric(diamonds$cut))
-diamonds2$clarity = factor(as.numeric(diamonds$clarity))
-diamonds2$color = factor(as.numeric(diamonds$color))
-mod7 = lm(price ~ ., diamonds2)
-coef(mod7)
-summary(mod7)$r.squared
-summary(mod7)$sigma
-#diamonds1$price = NULL
-y = diamonds$price
+data("diamonds")
+diamonds$cutFair = ifelse(diamonds$cut =="Fair", 1,0)
+diamonds$cutGood = ifelse(diamonds$cut =="Good", 1,0)
+diamonds$cutVery_good = ifelse(diamonds$cut =="Very Good", 1,0)
+diamonds$cutPremium = ifelse(diamonds$cut =="Premium", 1,0)
+diamonds$cutIdeal = ifelse(diamonds$cut =="Ideal", 1,0)
+diamonds$colorD = ifelse(diamonds$color =="D", 1,0)
+diamonds$colorE = ifelse(diamonds$color =="E", 1,0)
+diamonds$colorE = ifelse(diamonds$color =="F", 1,0)
+diamonds$colorH = ifelse(diamonds$color =="H", 1,0)
+diamonds$colorI = ifelse(diamonds$color =="I", 1,0)
+diamonds$colorJ = ifelse(diamonds$color =="J", 1,0)
+diamonds$clarityIF = ifelse(diamonds$clarity =="IF",1,0)
+diamonds$clarityVVS1 = ifelse(diamonds$clarity =="VVS1", 1,0)
+diamonds$clarityVVS2 = ifelse(diamonds$clarity =="VVS2", 1,0)
+diamonds$clarityVS1 = ifelse(diamonds$clarity =="VS1", 1,0)
+diamonds$clarityVS2 = ifelse(diamonds$clarity =="VS2", 1,0)
+diamonds$claritySI1 = ifelse(diamonds$clarity =="SI1", 1,0)
+diamonds$claritySI2 = ifelse(diamonds$clarity =="SI2", 1,0)
+diamonds$cut = NULL
+diamonds$color = NULL
+diamonds$clarity = NULL
 
-X2 = as.matrix(cbind(1, diamonds2))
-
-t(X2) %*% X2
-XtX = t(X2) %*% X2
-XtXinv = solve(XtX, tol = 1e-22)
-H = X1 %*% XtXinv %*% t(X1)
+diamonds1 = diamonds[sample(nrow(diamonds), 0.08*nrow(diamonds)), ]
+y = diamonds1$price
+diamonds1$price = NULL
+diamonds1$cutGood = NULL
+diamonds$colorD = NULL
+diamonds$clarityIF =NULL
+X = as.matrix(cbind(1,diamonds1))
+XtX = t(X) %*% X
+XtXinv = solve(XtX, tol =  1.73e-22)
+H = X %*% XtXinv %*% t(X)
 yhat = H %*% y
+
 head(yhat)
+#diamonds2 = diamonds
+#diamonds$cut = factor(as.numeric(diamonds$cut))
+#diamonds$clarity = factor(as.numeric(diamonds$clarity))
+#diamonds$color = factor(as.numeric(diamonds$color))
+#mod7 = lm(price ~ ., diamonds)
+#coef(mod7)
+#summary(mod7)$r.squared
+#summary(mod7)$sigma
+#diamonds = diamonds[sample(nrow(diamonds), 0.08*nrow(diamonds)), ]
+#diamonds$price = NULL
+
+#X = as.matrix(cbind(1, diamonds))
+#XtX = t(X) %*% X
+#XtXinv = solve(XtX, tol =  1.73e-40)
+#H = X %*% XtXinv %*% t(X)
+
+#yhat = H %*% y
+
+#head(yhat)
+
+#diamonds1 = diamonds
+#diamonds1 =  diamonds1[sample(nrow(diamonds1), 1000), ]
+#X1 = as.matrix(cbind(1, diamonds1))
+
+#XtX = t(X1) %*% X1
+#XtXinv = solve(XtX, tol = 1e-26)
+#H = X1 %*% XtXinv %*% t(X1)
+#warnings()
+#yhat = H %*% y
+#head(yhat)
 ```
 
 What is $b$, $R^2$ and the RMSE? 
@@ -374,30 +402,33 @@ What is $b$, $R^2$ and the RMSE?
 ```{r}
 #TO-DO
 e = y - yhat
-head(e)
-I = diag(nrow(X1))
-e_with_H = (I - H) %*% y
-head(e_with_H)
+#head(e)
+I = diag(nrow(X))
+e_with_H = (I - H) * y
+#head(e_with_H)
 ybar = mean(y)
 SST = sum((y - ybar)^2)
 SSR = sum((yhat - ybar)^2)
 SSE = sum(e^2)
-SSR + SSE
-SST
-SST/SSE
+#SSR + SSE
+#SST
+b = XtXinv %*% t(X) %*% y
+b #b
+(SST -SSE)/SST #R^2
+sqrt(mean(e^2)) #RMSE
 ```
 
 Are they the same as in #4?
-
+Very close, but we sampled so it's not the same
 **TO-DO
 
 Redo the model fit using matrix algebra by projecting onto an orthonormal basis for the predictor space $Q$ and the Gram-Schmidt "remainder" matrix $R$. Formulas are in the notes. Verify $b$ is the same.
 
 ```{r}
 #TO-DO
-qrX2 = qr(X2)
-Q = qr.Q(qrX2)
-R = qr.R(qrX2)
+qrX = qr(X)
+Q = qr.Q(qrX)
+R = qr.R(qrX)
 
 sum(Q[, 1]^2) #normalized?
 sum(Q[, 2]^2) #normalized?
@@ -413,6 +444,9 @@ Generate the vectors $\hat{y}$, $e$ and the hat matrix $H$.
 
 ```{r}
 #TO-DO
+e = y - yhat
+H = X %*% XtXinv %*% t(X)
+yhat = H %*% y
 ```
 
 In one line each, verify that 
@@ -426,13 +460,23 @@ In one line each, verify that
 ```{r}
 #TO-DO
 
+pacman::p_load(testthat)
+expect_equal(as.vector(e+yhat), y) #(a)
+expect_equal(as.vector(t(yhat) %*% e),0, tol = 1e-1) #(b)
+expect_equal(sum(H %*% e),0 , tol = 1e-4) #(c)
+expect_equal (H %*% yhat, yhat) #(d)
+expect_equal(sum((I-H) %*% yhat), 0 , tol = 1e-4) #(e)
+expect_equal(SSR + SSE,SST) # (f)
+
 ```
 
 8. Fit a linear least squares model for price using all interactions and also 5-degree polynomials for all continuous predictors.
 
 ```{r}
 #TO-DO
-mod5 = lm(price ~ cut+color+clarity+poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE), diamonds)
+#cut+color+clarity
+data("diamonds")
+mod5 = lm(price ~.*.  +poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE), diamonds)
 ```
 
 Report $R^2$, RMSE, the standard error of the residuals ($s_e$) but you do not need to report $b$.
@@ -460,23 +504,19 @@ How many diamonds have predictions that are wrong by \$1,000 or more ?
 
 ```{r}
 #TO-DO
-n1 = 53940
-diamonds$price[5]
-
-predict(mod5,diamonds[5,])
-for (i in n){
-  predict(mod5)
-}
+sum(abs(summary(mod5$residuals))>=1000)
 ```
 
 $R^2$ now is very high and very impressive. But is RMSE impressive? Think like someone who is actually using this model to e.g. purchase diamonds.
-an error in the thousands is pretty significant so we probably dont want this model.
+Not terrible but it's still + or - 1200$
 **TO-DO
 
 What is the degrees of freedom in this model?
 
 ```{r}
 #TO-DO
+b = coef(mod5)
+b
 ```
 
 Do you think $g$ is close to $h^*$ in this model? Yes / no and why?
@@ -569,16 +609,16 @@ Using a test set hold out, find the number of fake predictors where you can reli
 ```{r}
 
 
-set.seed(1004)
+set.seed(1003)
 #TO-DO
-p_fake = 40
+p_fake = 50
 X = matrix(c(x, rnorm(n * p_fake)), ncol = 1 + p_fake)
 mod = lm(y ~ X)
 summary(mod)$r.squared
 sd(mod$residuals)
 
 
-K = 5
+K = 10
 
 test_indices = sample(1 : n, 1 / 10 * n)
 train_indices = setdiff(1 : n, test_indices)
