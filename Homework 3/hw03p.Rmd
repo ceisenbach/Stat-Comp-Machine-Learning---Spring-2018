@@ -217,7 +217,7 @@ mean(diamonds$price[diamonds$color == "J"])
 ```
 
 What would extrapolation look like in this model? We never covered this in class explicitly.
-You can't really extrapolate from a categorical predictor
+You can't really extrapolate from a categorical predictor. 
 **TO-DO
 
 4. Use `lm` to run a least squares linear regression using all available features to explain diamond price. 
@@ -238,7 +238,10 @@ summary(mod3)$r.squared
 summary(mod3)$sigma
 ```
 
+95% of predictions are + or - $2260.
+
 Interpret all entries in the vector $b$.
+
 The intercept is color D, cut Fair, clarity I1. Each slope for each variable is the increase or decrease in price from that variable.
 **TO-DO
 
@@ -268,7 +271,7 @@ ggplot(data.frame(null_residuals = diamonds$price - mean(diamonds$price), residu
 
 5. Reference your visualizations above. Does price vs. carat appear linear?
 
-Yes-ish
+Yes-ish, but is probably exponential or something like that.
 
 ** TO-DO
 
@@ -276,6 +279,7 @@ Upgrade your model in #4 to use one polynomial term for carat.
 
 ```{r}
 #TO-DO
+
 mod4 = lm(price ~ cut+color+clarity+x+y+z+depth+table +poly(carat, 2, raw = TRUE), diamonds)
 ```
 
@@ -293,22 +297,61 @@ The intercept is color D, cut Fair, clarity I1. Each slope for each variable is 
 **TO-DO
 
 Is this an improvement over the model in #4? Yes/no and why.
-Yes the rmse is lower and r-squared is higher
+Yes. The rmse is lower and r-squared is higher
 **TO-DO
 
 Define a function $g$ that makes predictions given a vector of the same features in $\mathbb{D}$.
 
 ```{r}
 #TO-DO
-g = function(vec){
- y_hat =  predict(mod3, vec)
- y_hat
+b = coef(mod4)
+g = function(x_star){
+  x_star_clarity = x_star["clarity"]
+  x_star_color = x_star["color"]
+  x_star_cut = x_star["cut"]
+ 
+  yhat ={  b["(Intercept)"] + x_star["carat"]*b["carat"] + x_star["carat"]^2*b["carat"]  
+      if(as.numeric(x_star_clarity) == 1){+b["clarityI1"]}
+     if(as.numeric(x_star_clarity) == 2) {+b["claritySI2"]} 
+    if(as.numeric(x_star_clarity) == 3) {+b["claritySI1"]} 
+      if(as.numeric(x_star_clarity) == 4) {+b["clarityVS2"]}
+     if(as.numeric(x_star_clarity) == 5) {+b["clarityVS1"]}
+     if(as.numeric(x_star_clarity) == 6) {+b["clarityVVS2"]}
+      if(as.numeric(x_star_clarity) == 7) {+b["clarityVVS1"]}
+     if(as.numeric(x_star_clarity) == 8) {+b["clarityIF"]}
+      if(as.numeric(x_star_color) == 1) {+b["colorD"]}
+     if(as.numeric(x_star_color) == 2) {+b["colorE"]}
+      if(as.numeric(x_star_color) == 3) {+b["colorF"]}
+       if(as.numeric(x_star_color) == 4) {+b["colorG"]}
+     if(as.numeric(x_star_color) == 5) {+b["colorH"]}
+    if(as.numeric(x_star_color) == 6) {+b["colorI"]}
+    if(as.numeric(x_star_color) == 7) {+b["colorJ"]}
+     if(as.numeric(x_star_cut) == 1) {+b["colorFair"]}
+     if(as.numeric(x_star_cut) == 2) {+b["colorGood"]}
+    if(as.numeric(x_star_cut) == 3) {+b["colorVery Good"]}
+     if(as.numeric(x_star_cut) == 4) {+b["colorPremium"]}
+    if(as.numeric(x_star_cut) == 5) {+b["colorIdeal"]}
+    +x_star["cutPremium"]*b["color"] + b["x"]*x_star["x"] + b["y"]*x_star["y"]+b["z"]*x_star["z"]         +b["depth"]*x_star["depth"] + b["table"]*x_star["table"]}
+  yhat
 }
-#n = 53000
-#test_indices = sample(1 : n, 1)
-#X_test = (diamonds[test_indices, ])
-#X_test$price = NULL
-#g(X_test)
+#g = function(x_star){
+#  x_star = model.matrix(mod4, diamonds)
+#  yhat = x_star%*%b
+#  yhat
+#}
+test_diamond = diamonds[20001,]
+prediction = predict(mod4,test_diamond)
+prediction
+g(test_diamond)
+
+n = 53000
+#test_diamond["clarityVS1"]
+test_indices = sample(1 : n, 1)
+X_test = (diamonds[test_indices, ])
+X_test$price = NULL
+g(X_test)
+b["cutGood"]+b["cutPremium"]+b["cutIdeal"]+b["colorE"]+b["colorF"]+b["colorG"]+b["colorH"]+b["colorI"]+b["colorJ"]+b["clarityIF"]+b["clarityVVS1"]+b["clarityVVS2"]+b["clarityVS1"]+b["clarityVS1"]+b["clarityVS2"]+b["claritySI1"]+b["claritySI2"]
+
 ```
 
 6. Use `lm` to run a least squares linear regression using a polynomial of color of degree 2 to explain price.  
@@ -325,76 +368,49 @@ Color is categorical
 7. Redo the model fit in #4 without using `lm` but using the matrix algebra we learned about in class. This is hard and requires many lines, but it's all in the notes.
 
 ```{r}
-#Xmm = model.matrix(price ~ ., diamonds)
-#head(Xmm, 20)
 
 #TO-DO
 data("diamonds")
-diamonds$cutFair = ifelse(diamonds$cut =="Fair", 1,0)
-diamonds$cutGood = ifelse(diamonds$cut =="Good", 1,0)
-diamonds$cutVery_good = ifelse(diamonds$cut =="Very Good", 1,0)
-diamonds$cutPremium = ifelse(diamonds$cut =="Premium", 1,0)
-diamonds$cutIdeal = ifelse(diamonds$cut =="Ideal", 1,0)
-diamonds$colorD = ifelse(diamonds$color =="D", 1,0)
-diamonds$colorE = ifelse(diamonds$color =="E", 1,0)
-diamonds$colorE = ifelse(diamonds$color =="F", 1,0)
-diamonds$colorH = ifelse(diamonds$color =="H", 1,0)
-diamonds$colorI = ifelse(diamonds$color =="I", 1,0)
-diamonds$colorJ = ifelse(diamonds$color =="J", 1,0)
-diamonds$clarityIF = ifelse(diamonds$clarity =="IF",1,0)
-diamonds$clarityVVS1 = ifelse(diamonds$clarity =="VVS1", 1,0)
-diamonds$clarityVVS2 = ifelse(diamonds$clarity =="VVS2", 1,0)
-diamonds$clarityVS1 = ifelse(diamonds$clarity =="VS1", 1,0)
-diamonds$clarityVS2 = ifelse(diamonds$clarity =="VS2", 1,0)
-diamonds$claritySI1 = ifelse(diamonds$clarity =="SI1", 1,0)
-diamonds$claritySI2 = ifelse(diamonds$clarity =="SI2", 1,0)
-diamonds$cut = NULL
-diamonds$color = NULL
-diamonds$clarity = NULL
+#diamonds$cutFair = ifelse(diamonds$cut =="Fair", 1,0)
+#diamonds$cutGood = ifelse(diamonds$cut =="Good", 1,0)
+#diamonds$cutVery_good = ifelse(diamonds$cut =="Very Good", 1,0)
+#diamonds$cutPremium = ifelse(diamonds$cut =="Premium", 1,0)
+#diamonds$cutIdeal = ifelse(diamonds$cut =="Ideal", 1,0)
+#diamonds$colorD = ifelse(diamonds$color =="D", 1,0)
+#diamonds$colorE = ifelse(diamonds$color =="E", 1,0)
+#diamonds$colorE = ifelse(diamonds$color =="F", 1,0)
+#diamonds$colorH = ifelse(diamonds$color =="H", 1,0)
+#diamonds$colorI = ifelse(diamonds$color =="I", 1,0)
+#diamonds$colorJ = ifelse(diamonds$color =="J", 1,0)
+#diamonds$clarityIF = ifelse(diamonds$clarity =="IF",1,0)
+#diamonds$clarityVVS1 = ifelse(diamonds$clarity =="VVS1", 1,0)
+#diamonds$clarityVVS2 = ifelse(diamonds$clarity =="VVS2", 1,0)
+#diamonds$clarityVS1 = ifelse(diamonds$clarity =="VS1", 1,0)
+#diamonds$clarityVS2 = ifelse(diamonds$clarity =="VS2", 1,0)
+#diamonds$claritySI1 = ifelse(diamonds$clarity =="SI1", 1,0)
+#diamonds$claritySI2 = ifelse(diamonds$clarity =="SI2", 1,0)
+#diamonds$cut = NULL
+#diamonds$color = NULL
+#diamonds$clarity = NULL
 
+
+#diamonds1$price = NULL
+#diamonds1$cutGood = NULL
+#diamonds1$colorD = NULL
+#diamonds1$clarityIF =NULL
+#X = as.matrix(cbind(1,diamonds1))
+#XtX = t(X) %*% X
+#XtXinv = solve(XtX, tol =  1.73e-22)
+#H = X %*% XtXinv %*% t(X)
+#yhat = H %*% y
 diamonds1 = diamonds[sample(nrow(diamonds), 0.08*nrow(diamonds)), ]
 y = diamonds1$price
-diamonds1$price = NULL
-diamonds1$cutGood = NULL
-diamonds$colorD = NULL
-diamonds$clarityIF =NULL
-X = as.matrix(cbind(1,diamonds1))
+head(yhat)
+X = model.matrix(price ~ . , diamonds1)
 XtX = t(X) %*% X
 XtXinv = solve(XtX, tol =  1.73e-22)
 H = X %*% XtXinv %*% t(X)
 yhat = H %*% y
-
-head(yhat)
-#diamonds2 = diamonds
-#diamonds$cut = factor(as.numeric(diamonds$cut))
-#diamonds$clarity = factor(as.numeric(diamonds$clarity))
-#diamonds$color = factor(as.numeric(diamonds$color))
-#mod7 = lm(price ~ ., diamonds)
-#coef(mod7)
-#summary(mod7)$r.squared
-#summary(mod7)$sigma
-#diamonds = diamonds[sample(nrow(diamonds), 0.08*nrow(diamonds)), ]
-#diamonds$price = NULL
-
-#X = as.matrix(cbind(1, diamonds))
-#XtX = t(X) %*% X
-#XtXinv = solve(XtX, tol =  1.73e-40)
-#H = X %*% XtXinv %*% t(X)
-
-#yhat = H %*% y
-
-#head(yhat)
-
-#diamonds1 = diamonds
-#diamonds1 =  diamonds1[sample(nrow(diamonds1), 1000), ]
-#X1 = as.matrix(cbind(1, diamonds1))
-
-#XtX = t(X1) %*% X1
-#XtXinv = solve(XtX, tol = 1e-26)
-#H = X1 %*% XtXinv %*% t(X1)
-#warnings()
-#yhat = H %*% y
-#head(yhat)
 ```
 
 What is $b$, $R^2$ and the RMSE? 
@@ -438,6 +454,8 @@ Q[, 2] %*% Q[, 3] #orthogonal?
 yhat_via_Q = Q %*% t(Q) %*% y
 head(yhat)
 head(yhat_via_Q)
+bq = solve(R) %*% t(Q) %*% y
+bq
 ```
 
 Generate the vectors $\hat{y}$, $e$ and the hat matrix $H$.
@@ -462,11 +480,12 @@ In one line each, verify that
 
 pacman::p_load(testthat)
 expect_equal(as.vector(e+yhat), y) #(a)
-expect_equal(as.vector(t(yhat) %*% e),0, tol = 1e-1) #(b)
-expect_equal(sum(H %*% e),0 , tol = 1e-4) #(c)
+expect_equal(as.vector(t(yhat) %*% e),0, tol = .2) #(b)
+expect_equal(sum(H %*% e),0 , tol = 1e-2) #(c)
 expect_equal (H %*% yhat, yhat) #(d)
 expect_equal(sum((I-H) %*% yhat), 0 , tol = 1e-4) #(e)
 expect_equal(SSR + SSE,SST) # (f)
+
 
 ```
 
@@ -474,9 +493,9 @@ expect_equal(SSR + SSE,SST) # (f)
 
 ```{r}
 #TO-DO
-#cut+color+clarity
+
 data("diamonds")
-mod5 = lm(price ~.*.  +poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE), diamonds)
+mod5 = lm(price ~. * .  +poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE), diamonds)
 ```
 
 Report $R^2$, RMSE, the standard error of the residuals ($s_e$) but you do not need to report $b$.
@@ -504,34 +523,36 @@ How many diamonds have predictions that are wrong by \$1,000 or more ?
 
 ```{r}
 #TO-DO
-sum(abs(summary(mod5$residuals))>=1000)
+#abs(mod5$residuals)
+sum(abs((mod5$residuals))>=1000)
 ```
 
 $R^2$ now is very high and very impressive. But is RMSE impressive? Think like someone who is actually using this model to e.g. purchase diamonds.
-Not terrible but it's still + or - 1200$
+Not terrible but it's still + or - 1300$
 **TO-DO
 
 What is the degrees of freedom in this model?
 
 ```{r}
 #TO-DO
-b = coef(mod5)
-b
+length(coef(mod5))
 ```
 
 Do you think $g$ is close to $h^*$ in this model? Yes / no and why?
-
+No, because h* is changing
 **TO-DO
 
 Do you think $g$ is close to $f$ in this model? Yes / no and why?
-
+yes, because we are fitting it better.  
 **TO-DO
 
 What more degrees of freedom can you add to this model to make $g$ closer to $f$?
-
+n-1 degrees of freedom.
 ** TO-DO
 
 Even if you allowed for so much expressivity in $\mathcal{H}$ that $f$ was an element in it, there would still be error due to ignorance of relevant information that you haven't measured. What information do you think can help? This is not a data science question - you have to think like someone who sells diamonds.
+
+The source, a Tiffany diamond is more expensive than a Costco diamond.
 
 ** TO-DO
 
@@ -552,7 +573,7 @@ X_train = diamonds[train_indices, ]
 y_train = y[train_indices]
 X_test = diamonds[test_indices, ]
 y_test = y[test_indices]
-mod6 = lm(y_train ~ cut+color+clarity+poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE), data.frame(X_train))
+mod6 = lm(price ~. * .  +poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE),data.frame(X_test))
 summary(mod6)$r.squared
 sd(mod6$residuals)
 y_hat_oos = predict(mod6, data.frame(X_test))
@@ -597,39 +618,41 @@ y = h_star_x + epsilon
 We then add fake predictors. For instance, here is the model with the addition of 2 fake predictors:
 
 ```{r}
-p_fake = 100
+p_fake = 1
 X = matrix(c(x, rnorm(n * p_fake)), ncol = 1 + p_fake)
+
 mod = lm(y ~ X)
 summary(mod)$r.squared
 sd(mod$residuals)
+
 ```
 
 Using a test set hold out, find the number of fake predictors where you can reliably say "I overfit". Some example code is below that you may want to use:
 
 ```{r}
+  test_indices = sample(1 : n, 1 / 10 * n)
+  train_indices = setdiff(1 : n, test_indices)
+  total_oose = c(2)
+  for (i in 1:100){
+    X=  cbind(X, rnorm(n))
+    X_test = X[test_indices, ]
+    X_train = X[train_indices, ]
+    y_test = y[test_indices]
+    y_train = y[train_indices]
+    mod = lm(y_train ~.,data.frame(X_train))
+
+    y_hat_oos = predict(mod, data.frame(X_test))
+    oos_residuals = y_test - y_hat_oos
+  #1 - sum(oos_residuals^2) / sum((y_test - mean(y_test))^2)
+  #print(i)
+    (summary(mod)$r.squared)
+    (1 - sum(oos_residuals^2) / sum((y_test - mean(y_test))^2))
+  #diff = sd(oos_residuals)-sd(mod$residuals)
+  #print(sd(oos_residuals))
+    total_oose = cbind(total_oose,sd(oos_residuals))
+}
+min(total_oose)
 
 
-set.seed(1003)
-#TO-DO
-p_fake = 50
-X = matrix(c(x, rnorm(n * p_fake)), ncol = 1 + p_fake)
-mod = lm(y ~ X)
-summary(mod)$r.squared
-sd(mod$residuals)
-
-
-K = 10
-
-test_indices = sample(1 : n, 1 / 10 * n)
-train_indices = setdiff(1 : n, test_indices)
-X_train = X[train_indices, ]
-y_train = y[train_indices]
-X_test = X[test_indices, ]
-y_test = y[test_indices]
-mod = lm(y_train ~.,data.frame(X_train))
-summary(mod)$r.squared
-y_hat_oos = predict(mod, data.frame(X_test))
-oos_residuals = y_test - y_hat_oos
-1 - sum(oos_residuals^2) / sum((y_test - mean(y_test))^2)
-sd(oos_residuals)
 ```
+Around 55 from my test, but it should just be 1, after all, one fake predictor is already overfitting.
