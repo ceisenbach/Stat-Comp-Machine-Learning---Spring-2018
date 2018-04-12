@@ -535,20 +535,23 @@ What is the degrees of freedom in this model?
 
 ```{r}
 #TO-DO
+#b = (coef(mod5) )
+#b = b[!is.na(b)]
+#length(b)
 length(coef(mod5))
 ```
 
 Do you think $g$ is close to $h^*$ in this model? Yes / no and why?
 No, because h* is changing
-**TO-DO
+
 
 Do you think $g$ is close to $f$ in this model? Yes / no and why?
 yes, because we are fitting it better.  
-**TO-DO
+
 
 What more degrees of freedom can you add to this model to make $g$ closer to $f$?
 n-1 degrees of freedom.
-** TO-DO
+
 
 Even if you allowed for so much expressivity in $\mathcal{H}$ that $f$ was an element in it, there would still be error due to ignorance of relevant information that you haven't measured. What information do you think can help? This is not a data science question - you have to think like someone who sells diamonds.
 
@@ -573,7 +576,7 @@ X_train = diamonds[train_indices, ]
 y_train = y[train_indices]
 X_test = diamonds[test_indices, ]
 y_test = y[test_indices]
-mod6 = lm(price ~. * .  +poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE),data.frame(X_test))
+mod6 = lm(price ~. * .  +poly(carat, 5, raw = TRUE)+poly(x, 5, raw = TRUE)+poly(y, 5, raw = TRUE)+poly(z, 5, raw = TRUE)+poly(depth, 5, raw = TRUE)+poly(table, 5, raw = TRUE),data.frame(X_train))
 summary(mod6)$r.squared
 sd(mod6$residuals)
 y_hat_oos = predict(mod6, data.frame(X_test))
