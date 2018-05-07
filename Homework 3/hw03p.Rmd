@@ -290,6 +290,7 @@ What is $b$, $R^2$ and the RMSE?
 coef(mod4)
 summary(mod4)$r.squared
 summary(mod4)$sigma
+b = coef(mod4)
 ```
 
 Interpret each element in $b$ just like previously. You can copy most of the text from the previous question but be careful. There is one tricky thing to explain.
@@ -339,6 +340,21 @@ g = function(x_star){
 #  yhat = x_star%*%b
 #  yhat
 #}
+#g = function(x_star){
+#  y_hat = b[("Intercept")] + b["carat"]*x[1] +b["carat"]*x[1]*x[1] + b["depth"]*x[5]+ #b["table"]*x[6]+b["x"]*x[7]+b["y"]*x[8]+b["z"]*x[9] 
+#  if(x[2] != "Fair"){
+#    y_hat = y_hat + b[as.character(x[2])]
+#  }
+#  if(x[3] != "D"){
+#    y_hat = y_hat +b[as.character(x[3])]
+#  }
+#  if(x[4] != "I1"){
+#    y_hat = y_hat +
+#  }
+#}
+g = function(x_star){
+  x_star%*%b
+}
 test_diamond = diamonds[20001,]
 prediction = predict(mod4,test_diamond)
 prediction
@@ -350,7 +366,6 @@ test_indices = sample(1 : n, 1)
 X_test = (diamonds[test_indices, ])
 X_test$price = NULL
 g(X_test)
-b["cutGood"]+b["cutPremium"]+b["cutIdeal"]+b["colorE"]+b["colorF"]+b["colorG"]+b["colorH"]+b["colorI"]+b["colorJ"]+b["clarityIF"]+b["clarityVVS1"]+b["clarityVVS2"]+b["clarityVS1"]+b["clarityVS1"]+b["clarityVS2"]+b["claritySI1"]+b["claritySI2"]
 
 ```
 
@@ -371,38 +386,6 @@ Color is categorical
 
 #TO-DO
 data("diamonds")
-#diamonds$cutFair = ifelse(diamonds$cut =="Fair", 1,0)
-#diamonds$cutGood = ifelse(diamonds$cut =="Good", 1,0)
-#diamonds$cutVery_good = ifelse(diamonds$cut =="Very Good", 1,0)
-#diamonds$cutPremium = ifelse(diamonds$cut =="Premium", 1,0)
-#diamonds$cutIdeal = ifelse(diamonds$cut =="Ideal", 1,0)
-#diamonds$colorD = ifelse(diamonds$color =="D", 1,0)
-#diamonds$colorE = ifelse(diamonds$color =="E", 1,0)
-#diamonds$colorE = ifelse(diamonds$color =="F", 1,0)
-#diamonds$colorH = ifelse(diamonds$color =="H", 1,0)
-#diamonds$colorI = ifelse(diamonds$color =="I", 1,0)
-#diamonds$colorJ = ifelse(diamonds$color =="J", 1,0)
-#diamonds$clarityIF = ifelse(diamonds$clarity =="IF",1,0)
-#diamonds$clarityVVS1 = ifelse(diamonds$clarity =="VVS1", 1,0)
-#diamonds$clarityVVS2 = ifelse(diamonds$clarity =="VVS2", 1,0)
-#diamonds$clarityVS1 = ifelse(diamonds$clarity =="VS1", 1,0)
-#diamonds$clarityVS2 = ifelse(diamonds$clarity =="VS2", 1,0)
-#diamonds$claritySI1 = ifelse(diamonds$clarity =="SI1", 1,0)
-#diamonds$claritySI2 = ifelse(diamonds$clarity =="SI2", 1,0)
-#diamonds$cut = NULL
-#diamonds$color = NULL
-#diamonds$clarity = NULL
-
-
-#diamonds1$price = NULL
-#diamonds1$cutGood = NULL
-#diamonds1$colorD = NULL
-#diamonds1$clarityIF =NULL
-#X = as.matrix(cbind(1,diamonds1))
-#XtX = t(X) %*% X
-#XtXinv = solve(XtX, tol =  1.73e-22)
-#H = X %*% XtXinv %*% t(X)
-#yhat = H %*% y
 diamonds1 = diamonds[sample(nrow(diamonds), 0.08*nrow(diamonds)), ]
 y = diamonds1$price
 head(yhat)
@@ -516,14 +499,14 @@ y_hat = as.vector(y - resid(mod5))
 ggplot() +
   stat_density(aes(x = y), fill = "darkgreen", alpha = 0.3) + 
   stat_density(aes(x = y_hat, fill = "red", alpha = 0.3)) 
-
+a = data.frame(y = diamonds$price , y_hat = y- resid(mod5))
+(ggplot(a,aes(x = y_hat, y = y)) + xlab("y_hat")+geom_point() + geom_smooth()) 
 ```
 
 How many diamonds have predictions that are wrong by \$1,000 or more ?
 
 ```{r}
 #TO-DO
-#abs(mod5$residuals)
 sum(abs((mod5$residuals))>=1000)
 ```
 
@@ -565,13 +548,12 @@ The source, a Tiffany diamond is more expensive than a Costco diamond.
 #TO-DO
 #set.seed(1000)
 n = 53940
-K = 10 #i.e. the test set is 1/10th of the entire historical dataset
+K = 10 # the test set is 1/10th of the entire historical dataset
 y = diamonds$price
-#a simple algorithm to do this is to sample indices directly
+
 test_indices = sample(1 : n, 1 / K * n)
 train_indices = setdiff(1 : n, test_indices)
 
-#now pull out the matrices and vectors based on the indices
 X_train = diamonds[train_indices, ]
 y_train = y[train_indices]
 X_test = diamonds[test_indices, ]
@@ -636,7 +618,7 @@ Using a test set hold out, find the number of fake predictors where you can reli
   test_indices = sample(1 : n, 1 / 10 * n)
   train_indices = setdiff(1 : n, test_indices)
   total_oose = c(2)
-  for (i in 1:100){
+  for (i in 1:80){
     X=  cbind(X, rnorm(n))
     X_test = X[test_indices, ]
     X_train = X[train_indices, ]
@@ -647,11 +629,11 @@ Using a test set hold out, find the number of fake predictors where you can reli
     y_hat_oos = predict(mod, data.frame(X_test))
     oos_residuals = y_test - y_hat_oos
   #1 - sum(oos_residuals^2) / sum((y_test - mean(y_test))^2)
-  #print(i)
+  print(i)
     (summary(mod)$r.squared)
     (1 - sum(oos_residuals^2) / sum((y_test - mean(y_test))^2))
   #diff = sd(oos_residuals)-sd(mod$residuals)
-  #print(sd(oos_residuals))
+  print(sd(oos_residuals))
     total_oose = cbind(total_oose,sd(oos_residuals))
 }
 min(total_oose)
