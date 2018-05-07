@@ -7,3 +7,5 @@
   * HW3P [PDF](https://github.com/ceisenbach/QC-MATH-390.4-Spring-2018/blob/master/Homework%203/hw03p.pdf) [Rmd](https://github.com/ceisenbach/QC-MATH-390.4-Spring-2018/blob/master/Homework%203/hw03p.Rmd)
   
   * HW3T [PDF](https://github.com/ceisenbach/QC-MATH-390.4-Spring-2018/blob/master/Homework%203/HW3t.pdf)
+4. Homework 4:
+  * HW4T [PDF without graphs and trees](https://github.com/ceisenbach/QC-MATH-390.4-Spring-2018/blob/master/Homework%204/hw4t.pdf)
